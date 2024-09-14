@@ -29,18 +29,13 @@
 from scapy.all import *
 import string
 import random
-import time
 
 from scapy.layers.dns import DNS, DNSQR
 from scapy.layers.inet import UDP, IP
 
 
 def send_dns_request():
-    # Generate a random subdomain
-    random_subdomain = ''.join(random.choices(string.ascii_lowercase, k=5))
-    qname = f"{random_subdomain}.example.com"
-
-    dns_request = IP(dst="10.9.0.53") / UDP(sport=RandShort(), dport=53) / DNS(rd=1, qd=DNSQR(qname=qname))
+    dns_request = IP(dst="10.9.0.53", src = "10.9.0.1") / UDP(sport=RandShort(), dport=53) / DNS(id=0xAAAA,qr=0, qdcount=1, ancount=0, nscount=0,arcount=0, qd=DNSQR(qname="abcde.example.com"))
     # Save the DNS request to a binary file
     with open("ip_req.bin", "wb") as file:
         file.write(bytes(dns_request))
