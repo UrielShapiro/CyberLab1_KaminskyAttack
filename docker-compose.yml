@@ -27,6 +27,13 @@ services:
         image: handsonsecurity/seed-ubuntu:large 
         container_name: seed-attacker
         tty: true
+        command: >
+            bash -c "
+            apt-get update &&
+            apt-get install -y gcc
+            && echo 'Attacking the user container' &&
+            cd ./volumes &&
+            gcc -o attack attack.c"
         cap_add:
                 - ALL
         privileged: true
