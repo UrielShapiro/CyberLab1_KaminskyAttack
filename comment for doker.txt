@@ -1,0 +1,39 @@
+$ ##3# Build the container images
+sudo docker-compose build
+ 
+ 
+#### Start the containers
+sudo docker-compose up 
+
+
+####Shut down the containers
+sudo docker-compose down 
+
+
+ sudo docker ps --format "{{.ID}} {{.Names}}"
+
+
+sudo docker exec -it 22bafd67b150 /bin/bash
+
+export PS1=":attacker-ns-10.9.0.153\w\n$>"
+
+
+###in the local dns and attecker-ns
+cat /etc/bind/named.conf
+
+
+####in user  and
+
+cat /etc/resolv.conf
+
+
+###on user 
+dig ns.attacker32.com
+dig www.example.com
+dig NS example.com
+dig @ns.attacker32.com www.example.com
+
+apt-get update
+apt-get install -y python3 python3-pip
+pip3 install scapy
+
