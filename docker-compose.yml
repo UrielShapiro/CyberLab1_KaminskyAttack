@@ -24,16 +24,9 @@ services:
                 ipv4_address: 10.9.0.5
 
     attacker:
-        image: handsonsecurity/seed-ubuntu:large 
+        image: ubuntu:latest
         container_name: seed-attacker
         tty: true
-        command: >
-            bash -c "
-            apt-get update &&
-            apt-get install -y gcc
-            && echo 'Attacking the user container' &&
-            cd ./volumes &&
-            gcc -o attack attack.c"
         cap_add:
                 - ALL
         privileged: true
