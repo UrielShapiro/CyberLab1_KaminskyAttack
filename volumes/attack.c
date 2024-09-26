@@ -97,9 +97,9 @@ void send_dns_response(char *buffer, int pkt_size, char *name)
   memcpy(buffer + 64, name, 5);
 
   // Modify the transaction ID (offset 28)
-  unsigned short id = rand() & 0xFFFF;
+  unsigned short id = rand() & 0xFFFF;  // random 16-bit integer - the transaction ID
   unsigned short id_net_order = htons(id);
-  memcpy(buffer + 28, &id_net_order, 2);
+  memcpy(buffer + 28, &id_net_order, 2);  // Assign the transaction ID to the packet
 
   // Send the packet
   send_raw_packet(buffer, pkt_size);
