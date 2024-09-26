@@ -20,5 +20,4 @@ def send_spoofed_response():
         file.write(bytes(reply))
 
 if __name__ == "__main__":
-    # for dns_id in range(0, 65536):  # Loop through all possible transaction IDs
     send_spoofed_response()
